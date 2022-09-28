@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.*;
 @ResponseBody
 @RequestMapping("hello")
 public class HelloController {
-    private Object requestMethod;
-
     // handles requests at path /hello
 //    @GetMapping("hello")
 //    @ResponseBody
@@ -22,13 +20,40 @@ public class HelloController {
         return "Goodbye, Spring!";
     }
 
-    //  handles requests of the form /hello?name="LaunchCode"
-    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST})
-    public String helloWithQueryPara(@RequestParam String name) {
+    //  creates greeting based on selected language
+    public static String createMessage(String name, String language) {
+        String message = "Hello, ";
+        if (language.equals("english")) {
+            message = "Hello, ";
+        } else if (language.equals("Spanish")) {
+            message = "¡Hola, ";
+        } else if (language.equals("French")) {
+            message = "Bonjour, ";
+        } else if (language.equals("Tagalog")) {
+            message = "Mabuhay, ";
+        } else if (language.equals("Klingon")) {
+            message = "NuqneH, ";
+        } else if (language.equals("Gaelic")) {
+            message = "Dia duit, ";
+        }
+        return message + name + "!";
+    }
+
+    @RequestMapping(value="form", method = RequestMethod.POST)
+    public String helloPost(@RequestParam String name, @RequestParam String language) {
+//        if (name == null) {
+//            name = "World";
+//        }
+        return createMessage(name, language);
+    }
+
+    //  handles requests of the form /hello/query?name="LaunchCode"
+    @RequestMapping(value="hello/query", method = {RequestMethod.GET, RequestMethod.POST})
+    public String helloWithQueryParam(@RequestParam String name) {
         return "Hello, " + name + "!";
     }
 
-    //  handles requests of the form /hello/LaunchCode
+    //  handles requests of the form /hello/{name}
     @GetMapping("{name}")
     public String helloWithPathParam(@PathVariable String name) {
         return "Hello, " + name + "!";
@@ -39,8 +64,16 @@ public class HelloController {
     public String helloForm() {
         return "<html>" +
                 "<body>" +
-                "<form action='hello' method='post'>" + // submit request to /hello
+                "<form action='hello/query' method='post'>" +
                 "<input type='text' name='name'>" +
+                "<select id=language-select>" +
+                "<option selected>English</option>" +
+                "<option>Spanish</option>" +
+                "<option>French</option>" +
+                "<option>Tagalog</option>" +
+                "<option>Gaelic</option>" +
+                "<option>Klingon</option>" +
+                "/<select>" +
                 "<input type='submit' value='Greet me!'>" +
                 "</form>" +
                 "</body>" +
