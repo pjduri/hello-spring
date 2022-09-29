@@ -21,30 +21,15 @@ public class HelloController {
     }
 
     //  creates greeting based on selected language
-    public static String createMessage(String name, String language) {
-        String message = "Hello, ";
-        if (language.equals("english")) {
-            message = "Hello, ";
-        } else if (language.equals("Spanish")) {
-            message = "¡Hola, ";
-        } else if (language.equals("French")) {
-            message = "Bonjour, ";
-        } else if (language.equals("Tagalog")) {
-            message = "Mabuhay, ";
-        } else if (language.equals("Klingon")) {
-            message = "NuqneH, ";
-        } else if (language.equals("Gaelic")) {
-            message = "Dia duit, ";
-        }
-        return message + name + "!";
-    }
 
-    @RequestMapping(value="form", method = RequestMethod.POST)
+
+    @RequestMapping(value="helloPost", method = {RequestMethod.GET, RequestMethod.POST})
     public String helloPost(@RequestParam String name, @RequestParam String language) {
-//        if (name == null) {
-//            name = "World";
-//        }
-        return createMessage(name, language);
+        if (name == null || name.equals("")) {
+            name = "World";
+        }
+        String message = HelloController.createMessage(name, language);
+        return message;
     }
 
     //  handles requests of the form /hello/query?name="LaunchCode"
@@ -64,10 +49,10 @@ public class HelloController {
     public String helloForm() {
         return "<html>" +
                 "<body>" +
-                "<form action='hello/query' method='post'>" +
+                "<form action='helloPost' method='post'>" +
                 "<input type='text' name='name'>" +
-                "<select id=language-select>" +
-                "<option selected>English</option>" +
+                "<select name='language'>" +
+                "<option>English</option>" +
                 "<option>Spanish</option>" +
                 "<option>French</option>" +
                 "<option>Tagalog</option>" +
@@ -80,4 +65,28 @@ public class HelloController {
                 "</html>";
     }
 
+    public static String createMessage(String name, String language) {
+        String message = "Hello, ";
+        switch (language) {
+            case "english":
+                message = "Hello, ";
+                break;
+            case "Spanish":
+                message = "¡Hola, ";
+                break;
+            case "French":
+                message = "Bonjour, ";
+                break;
+            case "Tagalog":
+                message = "Mabuhay, ";
+                break;
+            case "Klingon":
+                message = "NuqneH, ";
+                break;
+            case "Gaelic":
+                message = "Dia duit, ";
+                break;
+        }
+        return message + name + "!";
+    }
 }
